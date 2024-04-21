@@ -12,13 +12,10 @@ public class Employee {
     private String idNumber;
     private String address;
 
-    private int yearJoined;
-    private int monthJoined;
-    private int dayJoined;
-    private int monthWorkingInYear;
+    private LocalDate joinDate; // Menggunakan LocalDate untuk representasi tanggal bergabung
+    private Gender gender; // Menggunakan enum untuk representasi jenis kelamin
 
     private boolean isForeigner;
-    private boolean gender;
 
     private int monthlySalary;
     private int otherMonthlyIncome;
@@ -30,22 +27,20 @@ public class Employee {
     private List<String> childNames;
     private List<String> childIdNumbers;
 
-    public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, int yearJoined, int monthJoined, int dayJoined, boolean isForeigner, boolean gender) {
+    public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, LocalDate joinDate, Gender gender, boolean isForeigner) {
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.idNumber = idNumber;
         this.address = address;
-        this.yearJoined = yearJoined;
-        this.monthJoined = monthJoined;
-        this.dayJoined = dayJoined;
-        this.isForeigner = isForeigner;
+        this.joinDate = joinDate;
         this.gender = gender;
+        this.isForeigner = isForeigner;
 
-        childNames = new LinkedList<String>();
-        childIdNumbers = new LinkedList<String>();
+        childNames = new LinkedList<>();
+        childIdNumbers = new LinkedList<>();
     }
-	//LongMethod
+
     public void setMonthlySalary(int grade) {
         int baseSalary;
         switch (grade) {
@@ -83,15 +78,17 @@ public class Employee {
     }
 
     public int getAnnualIncomeTax() {
-
-        LocalDate date = LocalDate.now();
-
-        if (date.getYear() == yearJoined) {
-            monthWorkingInYear = date.getMonthValue() - monthJoined;
-        } else {
-            monthWorkingInYear = 12;
+        LocalDate currentDate = LocalDate.now();
+        int monthsWorked = 12; // Jika bergabung pada tahun sebelumnya, dianggap bekerja selama 12 bulan
+        if (currentDate.getYear() == joinDate.getYear()) {
+            monthsWorked = currentDate.getMonthValue() - joinDate.getMonthValue();
         }
+        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthsWorked, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+    }
 
-        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+    // Enum untuk representasi jenis kelamin
+    public enum Gender {
+        LAKI_LAKI,
+        PEREMPUAN
     }
 }
