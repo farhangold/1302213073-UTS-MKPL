@@ -41,41 +41,62 @@ public class Employee {
         childIdNumbers = new LinkedList<>();
     }
 
-    public void setMonthlySalary(int grade) {
-        int baseSalary;
-        switch (grade) {
-            case 1:
-                baseSalary = 3000000;
-                break;
-            case 2:
-                baseSalary = 5000000;
-                break;
-            case 3:
-                baseSalary = 7000000;
-                break;
-            default:
-                baseSalary = 0; 
-        }
-        monthlySalary = isForeigner ? (int) (baseSalary * 1.5) : baseSalary;
-    }
+	public void setMonthlySalary(int grade) {
+		if (grade >= 1 && grade <= 3) {
+			int baseSalary;
+			switch (grade) {
+				case 1:
+					baseSalary = 3000000;
+					break;
+				case 2:
+					baseSalary = 5000000;
+					break;
+				case 3:
+					baseSalary = 7000000;
+					break;
+				default:
+					baseSalary = 0;
+			}
+			monthlySalary = isForeigner ? (int) (baseSalary * 1.5) : baseSalary;
+		} else {
+			throw new IllegalArgumentException("Grade harus berada dalam rentang 1 hingga 3.");
+		}
+	}
 
-    public void setAnnualDeductible(int deductible) {
-        this.annualDeductible = deductible;
-    }
+	public void setAnnualDeductible(int deductible) {
+		if (deductible >= 0) {
+			this.annualDeductible = deductible;
+		} else {
+			throw new IllegalArgumentException("Deductible tidak boleh negatif.");
+		}
+	}
 
-    public void setAdditionalIncome(int income) {
-        this.otherMonthlyIncome = income;
-    }
+	public void setAdditionalIncome(int income) {
+		if (income >= 0) {
+			this.otherMonthlyIncome = income;
+		} else {
+			throw new IllegalArgumentException("Additional income tidak boleh negatif.");
+		}
+	}
 
-    public void setSpouse(String spouseName, String spouseIdNumber) {
-        this.spouseName = spouseName;
-        this.spouseIdNumber = spouseIdNumber;
-    }
+	public void setSpouse(String spouseName, String spouseIdNumber) {
+		if (spouseIdNumber != null && !spouseIdNumber.isEmpty()) {
+			this.spouseName = spouseName;
+			this.spouseIdNumber = spouseIdNumber;
+		} else {
+			throw new IllegalArgumentException("Spouse ID Number tidak boleh kosong.");
+		}
+	}
 
-    public void addChild(String childName, String childIdNumber) {
-        childNames.add(childName);
-        childIdNumbers.add(childIdNumber);
-    }
+	public void addChild(String childName, String childIdNumber) {
+		if (childName != null && !childName.isEmpty() && childIdNumber != null && !childIdNumber.isEmpty()) {
+			childNames.add(childName);
+			childIdNumbers.add(childIdNumber);
+		} else {
+			throw new IllegalArgumentException("Child name dan child ID number tidak boleh kosong.");
+		}
+	}
+
 
     public int getAnnualIncomeTax() {
         LocalDate currentDate = LocalDate.now();
